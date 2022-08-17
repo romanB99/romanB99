@@ -1,0 +1,2 @@
+- Hi im Roman, currently studying for my computer science degree.
+- 
