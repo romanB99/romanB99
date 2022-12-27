@@ -1,0 +1,185 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+
+void merge(int arr[], int l, int m, int r);
+void sort_selection(int number[],int size);
+void sort_bubble(int number[],int size);
+void sort_merge(int arr[], int l, int r);
+void print_array(int arr[], int size);
+
+
+
+int main(void)
+{
+	char choice;
+	int size,a; 
+	printf("input how many numbers you need to sort: \n");
+	scanf_s("%d", &size);
+	int* number = (int*)malloc(sizeof(int) * size); //allocating space for the number[]
+	if (number == NULL)  //checks that malloc worked if not exit
+		exit(1);
+	printf("enter the %i numbers please:\n", size); 
+	for (int i = 0; i < size; i++)   //gets user input of numbers
+	{
+		scanf_s("%d", &a);
+		*(number + i) = a;
+	}
+	printf("press 1 for : selection sort\n press 2 for bubble sort\n press 3 for merge sort\n");
+	scanf_s(" %c", &choice);
+	switch (choice)
+	{
+	case '1':
+		printf("you chose selection sort \n");
+		sort_selection(number,size);
+		break;
+	case '2':
+		printf("you chose bubble sort \n");
+		sort_bubble(number,size);
+		break;
+	case '3':
+	{
+		printf("you chose merge sort\n");
+		sort_merge(number, 0, size-1);
+		print_array(number, size);
+		break;
+	}
+	default: 
+		printf("error! not entered correct choice");
+	}
+}
+
+void print_array(int arr[], int size)
+{
+	int i = 0;
+	while(i<size-1)
+	{
+		printf("%i,", arr[i]);
+		i++;
+	}
+	printf("%i", arr[i]);
+}
+
+void sort_selection(int number[],int size)
+{
+	int i;
+	int index;
+	int tmp ;
+	for(int j=0;j<size;j++)
+	{
+		tmp = number[j];
+		for (i = j ; i < size;i++)
+		{
+			if (number[i] <= tmp)
+			{
+				tmp = number[i];
+				index = i;
+			}
+		
+		}
+		number[index] = number[j];
+		number[j] = tmp;
+		printf("%i", number[j]);
+
+	}
+
+}
+void sort_bubble(int number[],int size)
+{
+	int i;
+	int tmp;
+	int count = 0;
+	for (int j = 0; j < size; j++)
+	{
+		for (i = 0; i < size -j -1 ; i++)
+		{
+			if (number[i+1] <= number[i])
+			{
+				//swaps the numbers if the next is smaller
+				tmp = number[i];
+				number[i] = number[i + 1];
+				number[i + 1] = tmp;
+				count++;
+			}
+		}
+		if (count == 0) //if there were no swaps the numbers are already sorted and no need to continue.
+			break;
+	}
+	print_array(number, size);
+
+}
+
+void sort_merge(int arr[],  int l, int r)
+{	
+	if (l < r)
+	{
+		int m = l + (r - l) / 2;
+		sort_merge(arr, l, m);
+		sort_merge(arr, m + 1, r);
+		merge(arr, l, m, r);
+	}
+	else
+		return;
+}
+
+void merge(int arr[], int l, int m, int r)
+{
+	int i, j, k;
+	int n1;
+	int n2;
+	n1 = m - l + 1 ;
+	n2 = r - m ;
+	int* L = (int*)malloc(n1 * sizeof(int));  //space allocating for L[]
+	int* R = (int* )malloc(n2 * sizeof(int));  //space allocating for R[]
+	if (L == NULL || R == NULL) //check for error in allocating
+	{
+		printf("Error! memory not allocated.");
+		exit(1); //error
+	}
+	for (i = 0; i < n1; i++)  //copying to left side
+	{
+		L[i] = arr[l + i];
+	}
+	for (j = 0; j < n2; j++)  //copying to left side
+	{
+		R[j] = arr[m + 1 + j];
+	}
+
+	i = 0;
+	j = 0;
+	k = l;
+	while (i < n1 && j < n2)
+	{
+		if (L[i] <= R[j])
+		{
+			arr[k] = L[i];
+			i++;
+		}
+		else
+		{
+			arr[k] = R[j];
+			j++;
+		}
+		k++;
+
+	}
+	// Copy the remaining elements of L[], if there are any 
+	while (i < n1)
+	{
+		arr[k] = L[i];
+		i++;
+		k++;
+	}
+
+	// Copy the remaining elements of R[], if there are any 
+	while (j < n2)
+	{
+		arr[k] = R[j];
+		j++;
+		k++;
+	}
+	free(L);   // frees allocating space
+	free(R);  // frees allocating space
+}
